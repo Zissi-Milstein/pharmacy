@@ -32,7 +32,7 @@ def classify_drugs(drugs):
     if classifier is None or vectorizer is None:
         train_model()
 
-    X_new = vectorizer.transform(drugs['Drug'])
+    X_new = vectorizer.transform(drugs['Description'])
     drugs['Category'] = classifier.predict(X_new)
 
     return drugs
