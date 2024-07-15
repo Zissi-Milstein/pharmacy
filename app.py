@@ -5,6 +5,10 @@ from sklearn.ensemble import RandomForestClassifier
 from tempfile import NamedTemporaryFile
 import os
 
+# Global variables to store trained model
+classifier = None
+vectorizer = None
+
 # Function to read CSV or Excel file with fallback encoding
 def read_csv_with_fallback(file_path):
     try:
