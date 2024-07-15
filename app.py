@@ -6,11 +6,11 @@ from tempfile import NamedTemporaryFile
 import os
 
 # Function to read CSV or Excel file with fallback encoding
-def read_csv_with_fallback('knowndrugs.csv'):
+def read_csv_with_fallback(file_path):
     try:
-        return pd.read_csv('knowndrugs.csv')
+        return pd.read_csv(file_path)
     except UnicodeDecodeError:
-        return pd.read_csv('knowndrugs.csv', encoding='latin1')
+        return pd.read_csv(file_path, encoding='latin1')
 
 # Function to train model if not already trained
 def train_model():
