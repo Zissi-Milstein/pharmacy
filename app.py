@@ -31,7 +31,7 @@ def train_model():
     classifier = RandomForestClassifier()
     classifier.fit(X_train, y_train)
 
-# Function to classify drugs and calculate accuracy
+# Function to classify drugs and calculate accuracy percentage
 def classify_drugs(drugs):
     global classifier, vectorizer
 
@@ -41,9 +41,11 @@ def classify_drugs(drugs):
     X_new = vectorizer.transform(drugs['Description'])
     drugs['Predicted_Category'] = classifier.predict(X_new)
     
-    # Calculate accuracy if true labels are available
+    # Calculate accuracy percentage if true labels are available
     if 'Category' in drugs.columns:
-        drugs['Accuracy'] = accuracy_score(drugs['Category'], drugs['Predicted_Category'])
+        correct_predictions = (drugs['Category'] == drugs['Predicted_Category']).sum()
+        total_predictions = len(drugs)
+        drugs['Accuracy (%)'] = round((correct_predictions / total_predictions) * 100, 2)
 
     return drugs
 
@@ -71,10 +73,10 @@ def main():
             st.error('Unsupported file format. Upload a CSV or Excel file.')
             return
 
-        # Classify drugs and calculate accuracy
+        # Classify drugs and calculate accuracy percentage
         classified_df = classify_drugs(df)
 
-        # Show classified data including accuracy in Streamlit
+        # Show classified data including accuracy percentage in Streamlit
         st.write('Classified Drugs:')
         st.write(classified_df)
 
