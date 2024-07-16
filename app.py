@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier
 from tempfile import NamedTemporaryFile
 import os
+import base64
 
 # Global variables to store trained model
 classifier = None
@@ -41,6 +42,13 @@ def classify_drugs(drugs):
 
     return drugs
 
+# Function to create a download link for a DataFrame as CSV
+def get_table_download_link(df):
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()
+    href = f'<a href="data:file/csv;base64,{b64}" download="classified_drugs.csv">Download CSV File</a>'
+    return href
+
 # Streamlit UI
 def main():
     st.title('Drug Classification App')
@@ -61,17 +69,12 @@ def main():
         # Classify drugs
         classified_df = classify_drugs(df)
 
-        # Download classified file
-        with NamedTemporaryFile(delete=False) as tmp_file:
-            classified_df.to_csv(tmp_file.name, index=False)
-            st.download_button('Download Classified File', tmp_file.name, label='Click here')
-
-        # Remove temporary file
-        os.remove(tmp_file.name)
-
         # Show classified data in Streamlit
         st.write('Classified Drugs:')
         st.write(classified_df)
+
+        # Provide a download link for the classified data
+        st.markdown(get_table_download_link(classified_df), unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
