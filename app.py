@@ -5,6 +5,7 @@ from sklearn.ensemble import RandomForestClassifier
 from tempfile import NamedTemporaryFile
 import os
 import base64
+from sklearn.metrics import accuracy_score
 
 # Global variables to store trained model
 classifier = None
@@ -30,16 +31,12 @@ def train_model():
     classifier = RandomForestClassifier()
     classifier.fit(X_train, y_train)
 
-# Function to classify drugs
+# Function to classify drugs and calculate accuracy
 def classify_drugs(drugs):
+    global classifier, vectorizer
 
     if classifier is None or vectorizer is None:
         train_model()
-
-    X_new = vectorizer.transform(drugs['Description'])
-    drugs['Category'] = classifier.predict(X_new)
-    global classifier, vectorizer
-
 
     X_new = vectorizer.transform(drugs['Description'])
     drugs['Predicted_Category'] = classifier.predict(X_new)
@@ -47,7 +44,6 @@ def classify_drugs(drugs):
     # Calculate accuracy if true labels are available
     if 'Category' in drugs.columns:
         drugs['Accuracy'] = accuracy_score(drugs['Category'], drugs['Predicted_Category'])
-
 
     return drugs
 
@@ -75,10 +71,10 @@ def main():
             st.error('Unsupported file format. Upload a CSV or Excel file.')
             return
 
-        # Classify drugs
+        # Classify drugs and calculate accuracy
         classified_df = classify_drugs(df)
 
-        # Show classified data in Streamlit
+        # Show classified data including accuracy in Streamlit
         st.write('Classified Drugs:')
         st.write(classified_df)
 
