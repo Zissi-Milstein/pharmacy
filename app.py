@@ -32,7 +32,6 @@ def train_model():
 
 # Function to classify drugs
 def classify_drugs(drugs):
-    global classifier, vectorizer
 
     if classifier is None or vectorizer is None:
         train_model()
