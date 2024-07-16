@@ -39,6 +39,18 @@ def classify_drugs(drugs):
 
     X_new = vectorizer.transform(drugs['Description'])
     drugs['Category'] = classifier.predict(X_new)
+    global classifier, vectorizer
+
+    if classifier is None or vectorizer is None:
+        train_model()
+
+    X_new = vectorizer.transform(drugs['Description'])
+    drugs['Predicted_Category'] = classifier.predict(X_new)
+    
+    # Calculate accuracy if true labels are available
+    if 'Category' in drugs.columns:
+        drugs['Accuracy'] = accuracy_score(drugs['Category'], drugs['Predicted_Category'])
+
 
     return drugs
 
