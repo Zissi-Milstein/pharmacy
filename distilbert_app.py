@@ -4,7 +4,7 @@ from transformers import pipeline
 import base64
 import os 
 import requests
-import ZipFile
+from zipfile import ZipFile
 
 # Global variable to store the model pipeline
 classifier_pipeline = None
