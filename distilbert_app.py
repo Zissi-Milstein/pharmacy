@@ -7,10 +7,30 @@ import base64
 classifier_pipeline = None
 
 # Function to load the fine-tuned model pipeline
+# def load_model():
+    # global classifier_pipeline
+    # model_path = "/Users/zissimilstein/pharmacy/fine-tuned-model"
+    # classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path)
+import requests
+
+def download_model():
+    # Replace with your actual file ID
+    file_id = '12oc-aup6gTvQHXIf8zvw04Zd3flpGSjt'
+    url = f'https://drive.google.com/drive/folders/12oc-aup6gTvQHXIf8zvw04Zd3flpGSjt?usp=share_link'
+    response = requests.get(url, allow_redirects=True)
+    
+    # Ensure the directory exists
+    os.makedirs('./fine-tuned-model', exist_ok=True)
+    
+    # Save the downloaded file
+    open('./fine-tuned-model/model.safetensors', 'wb').write(response.content)
+
 def load_model():
+    download_model()
     global classifier_pipeline
-    model_path = "/Users/zissimilstein/pharmacy/fine-tuned-model"
-    classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path)
+    model_path = "./fine-tuned-model"  # Path to your local model directory
+    tokenizer_path = model_path  # Assuming the tokenizer is also in the same path
+    classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=tokenizer_path)
 
 
 def classify_drugs(drugs):
