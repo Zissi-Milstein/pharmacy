@@ -2,9 +2,6 @@ import streamlit as st
 import pandas as pd
 from transformers import pipeline
 import base64
-import os 
-import requests
-from zipfile import ZipFile
 
 # Global variable to store the model pipeline
 classifier_pipeline = None
@@ -14,6 +11,7 @@ def load_model():
     global classifier_pipeline
     model_path = "./fine-tuned-model"
     classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path)
+
 
 def classify_drugs(drugs):
     global classifier_pipeline
