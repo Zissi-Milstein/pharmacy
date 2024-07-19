@@ -12,28 +12,41 @@ def load_model():
     model_path = "./fine-tuned-model"
     classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path)
 
-# Define label mapping for the catagories
-label_mapping = {
-    10: "RX",
-    13: "SUPPLY-NON IV",
-    3: "IV DRUG",
-    7: "MISC",
-    8: "OTC"
-}
 
-# Function to classify drugs and calculate accuracy percentage
 def classify_drugs(drugs):
     global classifier_pipeline
 
     if classifier_pipeline is None:
         load_model()
 
-    # Use the fine-tuned model to classify the drug descriptions
-    drugs['Predicted_Category'] = drugs['Description'].apply(lambda x: classifier_pipeline(x)[0]['label'])
-    
-    # Extract the labels from the predictions and map them
-    drugs['Predicted_Category'] = [label_mapping[pred['label']] for pred in predictions]
-    
+    # Obtain predictions from the model
+    descriptions = drugs['Description'].tolist()
+    predictions = classifier_pipeline(descriptions)
+
+    # Debug: Print the predictions to understand their structure
+    st.write(predictions)
+
+    # Define label mapping for the catagories
+    label_mapping = {
+        "LABEL_10" : "RX",
+        "LABEL_13" : "SUPPLY-NON IV",
+        "LABEL_3" : "IV DRUG",
+        "LABEL_7" : "MISC",
+        "LABEL_8" : "OTC"
+    }
+
+    # Function to map the label to the category
+    def map_label(label):
+        return label_mapping.get(label, 'unknown')  # Default to 'unknown' if label is not in mapping
+
+    try:
+        # Extract and map the labels
+        drugs['Predicted_Category'] = [map_label(pred['label']) for pred in predictions]
+    except KeyError as e:
+        st.error(f"KeyError: {e} - Check if the label from the model is in the label_mapping.")
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
+
     # Calculate accuracy percentage if true labels are available
     if 'Category' in drugs.columns:
         correct_predictions = (drugs['Category'] == drugs['Predicted_Category']).sum()
@@ -41,6 +54,7 @@ def classify_drugs(drugs):
         drugs['Accuracy (%)'] = round((correct_predictions / total_predictions) * 100, 2)
 
     return drugs
+
 
 # Function to create a download link for a DataFrame as CSV
 def get_table_download_link(df):
