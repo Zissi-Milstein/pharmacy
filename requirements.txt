@@ -7,3 +7,4 @@ tensorflow
 nltk
 datasets
 torch
+tf-keras
