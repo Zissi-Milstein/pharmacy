@@ -9,7 +9,7 @@ classifier_pipeline = None
 # Function to load the fine-tuned model pipeline
 def load_model():
     global classifier_pipeline
-    model_path = "./fine-tuned-model"
+    model_path = "/Users/zissimilstein/pharmacy/fine-tuned-model"
     classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path)
 
 
