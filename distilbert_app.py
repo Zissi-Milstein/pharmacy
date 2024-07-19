@@ -10,41 +10,10 @@ from zipfile import ZipFile
 classifier_pipeline = None
 
 # Function to load the fine-tuned model pipeline
-# def load_model():
-    # global classifier_pipeline
-    # model_path = "/Users/zissimilstein/pharmacy/fine-tuned-model"
-    # classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path)
-
-def download_file_from_google_drive(file_id, destination):
-    URL = f'https://drive.google.com/uc?export=download&id={file_id}'
-    response = requests.get(URL, allow_redirects=True)
-    with open(destination, 'wb') as f:
-        f.write(response.content)
-
-def extract_zip(zip_path, extract_to):
-    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-        zip_ref.extractall(extract_to)
-
-def download_and_setup_model():
-    file_id = '1P9mOszQEnSNcHwHyg0r1Fn47gh7bH4zY'  # Google Drive file ID
-    zip_path = './fine-tuned-model.zip'
-    extract_to = './fine-tuned-model'
-
-    # Download the zip file
-    download_file_from_google_drive(file_id, zip_path)
-    
-    # Create model directory if not exists
-    os.makedirs(extract_to, exist_ok=True)
-    
-    # Extract the zip file
-    extract_zip(zip_path, extract_to)
-
 def load_model():
-    download_and_setup_model()
     global classifier_pipeline
-    model_path = "./fine-tuned-model"  # Path to your local model directory
-    tokenizer_path = model_path  # Assuming the tokenizer is also in the same path
-    classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=tokenizer_path)
+    model_path = "./fine-tuned-model"
+    classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path)
 
 def classify_drugs(drugs):
     global classifier_pipeline
