@@ -44,7 +44,7 @@ def load_model():
     global classifier_pipeline
     model_path = "./fine-tuned-model"  # Path to your local model directory
     tokenizer_path = model_path  # Assuming the tokenizer is also in the same path
-    classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=tokenizer_path)th)
+    classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=tokenizer_path)
 
 def classify_drugs(drugs):
     global classifier_pipeline
