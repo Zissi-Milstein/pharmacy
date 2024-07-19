@@ -3,7 +3,7 @@ pandas
 openpyxl
 scikit-learn
 transformers
-torch  
+tensorflow
 nltk
 datasets
-
+torch
