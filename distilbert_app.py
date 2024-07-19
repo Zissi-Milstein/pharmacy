@@ -12,6 +12,15 @@ def load_model():
     model_path = "./fine-tuned-model"
     classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path)
 
+# Define label mapping for the catagories
+label_mapping = {
+    10: "RX",
+    13: "SUPPLY-NON IV",
+    3: "IV DRUG",
+    7: "MISC",
+    8: "OTC"
+}
+
 # Function to classify drugs and calculate accuracy percentage
 def classify_drugs(drugs):
     global classifier_pipeline
@@ -21,7 +30,10 @@ def classify_drugs(drugs):
 
     # Use the fine-tuned model to classify the drug descriptions
     drugs['Predicted_Category'] = drugs['Description'].apply(lambda x: classifier_pipeline(x)[0]['label'])
-
+    
+    # Extract the labels from the predictions and map them
+    drugs['Predicted_Category'] = [label_mapping[pred['label']] for pred in predictions]
+    
     # Calculate accuracy percentage if true labels are available
     if 'Category' in drugs.columns:
         correct_predictions = (drugs['Category'] == drugs['Predicted_Category']).sum()
