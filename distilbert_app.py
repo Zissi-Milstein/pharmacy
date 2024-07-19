@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import tensorflow as tf
 from transformers import pipeline
 import base64
 
@@ -11,9 +10,8 @@ classifier_pipeline = None
 def load_model():
     global classifier_pipeline
     model_path = "./fine-tuned-model"
-    
-    # Load TensorFlow model
-    classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path, from_tf=True)
+    classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path)
+
 
 def classify_drugs(drugs):
     global classifier_pipeline
@@ -28,13 +26,13 @@ def classify_drugs(drugs):
     # Debug: Print the predictions to understand their structure
     st.write(predictions)
 
-    # Define label mapping for the categories
+    # Define label mapping for the catagories
     label_mapping = {
-        "LABEL_10": "RX",
-        "LABEL_13": "SUPPLY-NON IV",
-        "LABEL_3": "IV DRUG",
-        "LABEL_7": "MISC",
-        "LABEL_8": "OTC"
+        "LABEL_10" : "RX",
+        "LABEL_13" : "SUPPLY-NON IV",
+        "LABEL_3" : "IV DRUG",
+        "LABEL_7" : "MISC",
+        "LABEL_8" : "OTC"
     }
 
     # Function to map the label to the category
@@ -56,6 +54,7 @@ def classify_drugs(drugs):
         drugs['Accuracy (%)'] = round((correct_predictions / total_predictions) * 100, 2)
 
     return drugs
+
 
 # Function to create a download link for a DataFrame as CSV
 def get_table_download_link(df):
