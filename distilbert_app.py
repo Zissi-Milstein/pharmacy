@@ -1,17 +1,16 @@
 import streamlit as st
 import pandas as pd
-from transformers import pipeline
-from tempfile import NamedTemporaryFile
-import os
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
 import base64
 
-# Global variables to store the model pipeline
+# Global variable to store the model pipeline
 classifier_pipeline = None
 
-# Function to load the Hugging Face model pipeline
+# Function to load the fine-tuned model pipeline
 def load_model():
     global classifier_pipeline
-    classifier_pipeline = pipeline("text-classification", model="distilbert-base-uncased-finetuned-sst-2-english")
+    model_path = "./fine-tuned-model"
+    classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path)
 
 # Function to classify drugs and calculate accuracy percentage
 def classify_drugs(drugs):
@@ -20,7 +19,7 @@ def classify_drugs(drugs):
     if classifier_pipeline is None:
         load_model()
 
-    # Use the Hugging Face model to classify the drug descriptions
+    # Use the fine-tuned model to classify the drug descriptions
     drugs['Predicted_Category'] = drugs['Description'].apply(lambda x: classifier_pipeline(x)[0]['label'])
     
     # Calculate accuracy percentage if true labels are available
