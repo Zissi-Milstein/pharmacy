@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, pipeline
+from transformers import pipeline
 import base64
 
 # Global variable to store the model pipeline
@@ -21,7 +21,7 @@ def classify_drugs(drugs):
 
     # Use the fine-tuned model to classify the drug descriptions
     drugs['Predicted_Category'] = drugs['Description'].apply(lambda x: classifier_pipeline(x)[0]['label'])
-    
+
     # Calculate accuracy percentage if true labels are available
     if 'Category' in drugs.columns:
         correct_predictions = (drugs['Category'] == drugs['Predicted_Category']).sum()
