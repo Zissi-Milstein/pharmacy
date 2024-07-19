@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from transformers import pipeline
 import base64
+import os 
 
 # Global variable to store the model pipeline
 classifier_pipeline = None
