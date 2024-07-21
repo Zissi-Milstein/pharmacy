@@ -15,13 +15,29 @@ def download_and_extract_model():
     output = 'fine-tuned-model.zip'
     model_path = './fine-tuned-model'
 
+    # Debug: Print the download link
+    st.write(f"Downloading model from: {url}")
+    
     # Download the model
     gdown.download(url, output, quiet=False)
+    
+    # Debug: Confirm the download
+    if os.path.exists(output):
+        st.write("Download completed.")
+    else:
+        st.error("Download failed.")
+        return model_path
 
     # Extract the model files
     with zipfile.ZipFile(output, 'r') as zip_ref:
         zip_ref.extractall(model_path)
 
+    # Debug: Confirm the extraction
+    if os.path.exists(model_path):
+        st.write("Extraction completed.")
+    else:
+        st.error("Extraction failed.")
+    
     return model_path
 
 # Function to load the fine-tuned model pipeline
