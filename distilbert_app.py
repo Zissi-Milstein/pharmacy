@@ -1,50 +1,17 @@
-import os
 import streamlit as st
 import pandas as pd
 from transformers import pipeline
 import base64
-import gdown
-import zipfile
 
 # Global variable to store the model pipeline
 classifier_pipeline = None
-
-# Function to download and extract the model from Google Drive
-def download_and_extract_model():
-    url = 'https://drive.google.com/uc?id=1P9mOszQEnSNcHwHyg0r1Fn47gh7bH4zY'
-    output = 'fine-tuned-model.zip'
-    model_path = './fine-tuned-model'
-
-    # Debug: Print the download link
-    st.write(f"Downloading model from: {url}")
-    
-    # Download the model
-    gdown.download(url, output, quiet=False)
-    
-    # Debug: Confirm the download
-    if os.path.exists(output):
-        st.write("Download completed.")
-    else:
-        st.error("Download failed.")
-        return model_path
-
-    # Extract the model files
-    with zipfile.ZipFile(output, 'r') as zip_ref:
-        zip_ref.extractall(model_path)
-
-    # Debug: Confirm the extraction
-    if os.path.exists(model_path):
-        st.write("Extraction completed.")
-    else:
-        st.error("Extraction failed.")
-    
-    return model_path
 
 # Function to load the fine-tuned model pipeline
 def load_model():
     global classifier_pipeline
     model_path = "./fine-tuned-model"
     classifier_pipeline = pipeline("text-classification", model=model_path, tokenizer=model_path)
+
 
 def classify_drugs(drugs):
     global classifier_pipeline
@@ -59,13 +26,13 @@ def classify_drugs(drugs):
     # Debug: Print the predictions to understand their structure
     st.write(predictions)
 
-    # Define label mapping for the categories
+    # Define label mapping for the catagories
     label_mapping = {
-        "LABEL_10": "RX",
-        "LABEL_13": "SUPPLY-NON IV",
-        "LABEL_3": "IV DRUG",
-        "LABEL_7": "MISC",
-        "LABEL_8": "OTC"
+        "LABEL_10" : "RX",
+        "LABEL_13" : "SUPPLY-NON IV",
+        "LABEL_3" : "IV DRUG",
+        "LABEL_7" : "MISC",
+        "LABEL_8" : "OTC"
     }
 
     # Function to map the label to the category
@@ -87,6 +54,7 @@ def classify_drugs(drugs):
         drugs['Accuracy (%)'] = round((correct_predictions / total_predictions) * 100, 2)
 
     return drugs
+
 
 # Function to create a download link for a DataFrame as CSV
 def get_table_download_link(df):
@@ -123,7 +91,4 @@ def main():
         st.markdown(get_table_download_link(classified_df), unsafe_allow_html=True)
 
 if __name__ == '__main__':
-    # Ensure model is downloaded and extracted before running the app
-    if not os.path.exists('./fine-tuned-model'):
-        download_and_extract_model()
     main()
